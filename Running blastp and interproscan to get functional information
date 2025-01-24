@@ -1,0 +1,24 @@
+#!/bin/bash
+#SBATCH --time=24:00:00
+#SBATCH --job-name=blastp
+#SBATCH --cpus-per-task=32
+#SBATCH --mem=64G
+#SBATCH --account=rrg-rbeiko
+#SBATCH --mail-type=FAIL,END
+#SBATCH --mail-user=sm871954@dal.ca
+
+module load StdEnv/2023 gcc/12.3
+module load blast+/2.14.1
+
+db_path="/home/somab/projects/rrg-rbeiko/somab/Projects/ARETE/Thalassolituus/blast/swissprot_db"
+
+for protein_file in /home/somab/projects/rrg-rbeiko/somab/Projects/ARETE/Thalassolituus/thalassolituus_proteins/*.faa; do
+    blastp -query "$protein_file" \
+           -db "$db_path" \
+           -out "${protein_file%.*}_top_hits.txt" \
+           -max_target_seqs 1 \
+           -evalue 1e-25 \
+           -max_hsps 1 \
+           -outfmt '6 qseqid bitscore evalue length qlen qcovs pident sseqid sgi sacc staxid ssciname scomname stitle sseq' \
+           -num_threads $SLURM_CPUS_PER_TASK
+done
