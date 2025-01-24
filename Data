@@ -1,0 +1,9 @@
+#Downloading all nonredundant Thalassolituus genomes and proteomes from RefSeq 
+
+conda create -n ncbi_env python=3.9
+conda update -n base -c conda-forge conda
+conda activate ncbi_env
+pip install ncbi-genome-download
+
+ncbi-genome-download --genera Thalassolituus --section refseq --formats fasta, protein-fasta bacteria
+
