@@ -22,3 +22,36 @@ for protein_file in /home/somab/projects/rrg-rbeiko/somab/Projects/ARETE/Thalass
            -outfmt '6 qseqid bitscore evalue length qlen qcovs pident sseqid sgi sacc staxid ssciname scomname stitle sseq' \
            -num_threads $SLURM_CPUS_PER_TASK
 done
+
+
+
+#!/bin/bash
+#SBATCH --time=48:00:00
+#SBATCH --job-name=interproscan2
+#SBATCH --cpus-per-task=32
+#SBATCH --mem=64G
+#SBATCH --account=rrg-rbeiko
+#SBATCH --mail-type=FAIL,END
+#SBATCH --mail-user=sm871954@dal.ca
+
+module load StdEnv/2020
+module load interproscan/5.64-96.0
+
+INPUT_DIR="/home/somab/projects/rrg-rbeiko/somab/Projects/ARETE/Thalassolituus/thalassolituus_proteins"
+OUTPUT_DIR="/home/somab/projects/rrg-rbeiko/somab/Projects/ARETE/Thalassolituus/interproscan_results"
+mkdir -p "$OUTPUT_DIR"
+
+for protein_file in "$INPUT_DIR"/*.faa; do
+    base_name=$(basename "$protein_file" .faa)
+    interproscan.sh -i "$protein_file" \
+                    -f TSV \
+                    -appl Pfam,SMART,SUPERFAMILY,PRINTS,TIGRFAM,PIRSF \
+                    -cpu $SLURM_CPUS_PER_TASK \
+                    -goterms \
+                    -pathways \
+                    -iprlookup \
+                    -pa \
+                    -t p \
+                    -dp \
+                    -o "$OUTPUT_DIR/${base_name}_interproscan"
+done
