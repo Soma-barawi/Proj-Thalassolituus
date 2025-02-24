@@ -7,3 +7,6 @@ pip install ncbi-genome-download
 
 ncbi-genome-download --genera Thalassolituus --section refseq --formats fasta, protein-fasta bacteria
 
+#downloading all Thalassolituus genomes from Genbank also
+
+ncbi-genome-download --genera Thalassolituus --section genbank --formats fasta, protein-fasta bacteria
