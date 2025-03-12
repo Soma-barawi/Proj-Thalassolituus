@@ -1,0 +1,112 @@
+library(pheatmap)
+library(viridis)
+library(dplyr)
+library(tidyr)
+library(ggplotify)
+library(grid)
+
+#reorder the gene names so u can group them
+custom_gene_order <- c("nifH", "nifD", "nifK", "nifX", "nifY", "nifA", 
+                       "nifL", "nifQ", "nifZ", "nifM", "nifE", "nifB", 
+                       "nifV", "nifN", "nifF", "nifP", "nifS", "nifU")
+
+blastp_data$Gene <- factor(blastp_data$Gene, levels = custom_gene_order)
+
+#map the genes to their role just using their UniProt definitions
+gene_roles <- c(
+  "nifH" = "Structural", "nifD" = "Structural", "nifK" = "Structural",
+  "nifX" = "Stability", "nifY" = "Stability", "nifA" = "Regulation",
+  "nifL" = "Regulation", "nifQ" = "Regulation", "nifZ" = "Maturation",
+  "nifM" = "Maturation", "nifE" = "FeMo cofactor biosynthesis", 
+  "nifB" = "FeMo cofactor biosynthesis", "nifV" = "FeMo cofactor biosynthesis",
+  "nifN" = "FeMo cofactor biosynthesis", "nifF" = "Electron donation",
+  "nifP" = "Auxiliary", "nifS" = "Assembly", "nifU" = "Assembly"
+)
+
+blastp_data$Role <- gene_roles[blastp_data$Gene]
+
+#transform data into a matrix format
+heatmap_matrix <- blastp_data %>%
+  select(Genomes, Gene, Pident) %>%
+  pivot_wider(
+    names_from = Genomes, 
+    values_from = Pident, 
+    values_fn = mean,  # aggregates data by taking the mean if there are duplicates
+    values_fill = list(Pident = 0)  #missing values with 0
+  ) %>%
+  column_to_rownames(var = "Gene") %>%
+  as.matrix()
+
+#order the genes
+heatmap_matrix <- heatmap_matrix[custom_gene_order, , drop = FALSE]
+
+pathway_annotations <- data.frame(
+  Role = gene_roles[rownames(heatmap_matrix)]  # Only include genes present in heatmap_matrix
+)
+
+ann_colors <- list(
+  Role = c("Structural" = "blue", "Stability" = "darkgreen", "Regulation" = "orange",
+           "Maturation" = "purple", "FeMo cofactor biosynthesis" = "darkred", 
+           "Electron donation" = "yellow", "Auxiliary" = "pink", "Assembly" = "darkcyan")
+)
+
+pheatmap(
+  heatmap_matrix, 
+  color = viridis(100, option = "plasma"),
+  cluster_rows = FALSE,   # No clustering for rows, maintain custom order
+  cluster_cols = FALSE,   # No clustering for columns (genomes)
+  annotation_row = pathway_annotations,
+  annotation_colors = ann_colors,
+  border_color = "grey",
+  fontsize = 8,
+  fontsize_row = 10,  # Adjust gene label size
+  fontsize_col = 8, 
+  angle_col = 45,   # Adjust genome label angle
+  main = "Extracted Nif genes using BLASTp based on percent identity",
+  margins = c(10, 10),   # Increase the margin at the bottom to prevent cutting off column names
+  cellwidth = 12,  # Adjust the width of each cell
+  cellheight = 12  # Adjust the height of each cell
+)
+
+ggsave("nif_heatmap_version1.png", p, width = 10, height = 8, units = "in", dpi = 500)
+
+
+-----
+#to change the NA colors on the color scale to either black or white 
+heatmap_matrix <- blastp_data %>%
+  select(Genomes, Gene, Pident) %>%
+  pivot_wider(
+    names_from = Genomes, 
+    values_from = Pident, 
+    values_fn = mean,
+    values_fill = list(Pident = NA)  # changed from 0 to NA
+  ) %>%
+  column_to_rownames(var = "Gene") %>%
+  as.matrix()
+# value range excluding NAs
+value_range <- range(heatmap_matrix, na.rm = TRUE)
+
+p <- pheatmap(
+  heatmap_matrix, 
+  color = viridis(100, option = "plasma"),
+  na_col = "white",  # Now works as TRUE missing values exist
+  breaks = seq(value_range[1], value_range[2], length.out = 100),
+  cluster_rows = FALSE,
+  cluster_cols = FALSE,
+  annotation_row = pathway_annotations,
+  annotation_colors = ann_colors,
+  border_color = "grey",
+  fontsize = 9,
+  fontsize_row = 11,
+  fontsize_col = 9,
+  angle_col = 45,
+  main = "Extracted Nif genes using BLASTp based on percent identity",
+  margins = c(10, 10),
+  cellwidth = 12,
+  cellheight = 12
+)
+
+ggsave("nif_updated_heatmap.png", p, width = 12, height = 12, units = "in", dpi = 500)
+
+
+
