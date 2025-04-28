@@ -1,0 +1,5 @@
+
+
+#downloading all Oceanospirillaceaeae
+datasets download genome taxon "Oceanospirillaceae" --reference --filename oceanospirillaceae_reference_genomes.zip
+ncbi-genome-download bacteria --assembly-accessions accessions.txt --output-folder genomes_downloaded 
