@@ -1,5 +1,15 @@
-
-
 #downloading all Oceanospirillaceaeae
 datasets download genome taxon "Oceanospirillaceae" --reference --filename oceanospirillaceae_reference_genomes.zip
 ncbi-genome-download bacteria --assembly-accessions accessions.txt --output-folder genomes_downloaded 
+
+#To make the sample sheet for ARETE
+awk '{print $1 ",/lustre06/project/6070434/somab/Projects/ARETE/Thalassolituus/Oceanospirillaceae/all_genbank/all_fna_gz/" $1 ".1.fna"}' accessions.txt > genome_paths.csv
+
+#because I've separated genbank and refseq paths
+awk '{
+    if ($1 ~ /^GCF_/) {
+        print $1 ",/lustre06/project/6070434/somab/Projects/ARETE/Thalassolituus/Oceanospirillaceae/all_refseq/all_fna_gz/" $1 ".1.fna"
+    } else {
+        print $1 ",/lustre06/project/6070434/somab/Projects/ARETE/Thalassolituus/Oceanospirillaceae/all_genbank/all_fna_gz/" $1 ".1.fna"
+    }
+}' accessions.txt > genome_paths.csv
