@@ -1,4 +1,5 @@
-# Create a conda environment
+# Create a conda environment for snippy 
+# https://github.com/tseemann/snippy
 conda create -n snippy-env -c bioconda -c conda-forge snippy
 conda activate snippy-env
 
@@ -30,6 +31,7 @@ diff <(grep -v "^>" core.full.aln | tr -d '\n') <(grep -v "^>" core.full.singlel
 
 # Already have conda environment for Gubbins 
 # conda activate gubbins_env 
+# https://github.com/nickjcroucher/gubbins
 
 # Run alignment checker on the single-line alignment file and save output prefix
 gubbins_alignment_checker.py --aln core.full.singleline.aln --out core_alignment_checked
