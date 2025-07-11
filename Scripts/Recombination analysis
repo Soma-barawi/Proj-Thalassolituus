@@ -61,3 +61,7 @@ raxmlHPC-PTHREADS-SSE3 -T 4 -safe -m GTRGAMMA -p 4734 -f d \
   -s clean.full.iteration_1.tre.snp_sites.aln \
   -n clean.full.iteration_2 \
   -t clean.full.iteration_1.tre
+
+# Resume gubbins with iteration 2 complete 
+run_gubbins.py --threads 4 --resume clean.full.iteration_2.tre clean.full.aln
+
