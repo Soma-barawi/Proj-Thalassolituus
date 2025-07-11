@@ -63,5 +63,15 @@ raxmlHPC-PTHREADS-SSE3 -T 4 -safe -m GTRGAMMA -p 4734 -f d \
   -t clean.full.iteration_1.tre
 
 # Resume gubbins with iteration 2 complete 
-run_gubbins.py --threads 4 --resume clean.full.iteration_2.tre clean.full.aln
+run_gubbins.py \
+  --filter-percentage 99.9 \
+  --prefix gubbins_output/thalasso \
+  --threads 4 \
+  --first-tree-builder fasttree \
+  --tree-builder raxml \
+  --resume clean.full.iteration_2.tre \
+  --no-cleanup \
+  --verbose \
+  clean.full.aln
+
 
