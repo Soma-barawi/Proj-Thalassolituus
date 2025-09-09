@@ -1,1 +1,108 @@
+# Script to extract nif gene sequences from faa files 
+
+#!/bin/bash
+#SBATCH --account=rrg-rbeiko
+
+outdir="./Nif_genes"
+mkdir -p "$outdir"
+
+nifN_out="$outdir/nifN_sequences.faa"
+nifB_out="$outdir/nifB_sequences.faa"
+nifE_out="$outdir/nifE_sequences.faa"
+
+cat <<EOF | while IFS=$'\t' read -r genome nifN nifB nifE; do
+New_ARC_Gamma03	CBBBBG_15965	CBBBBG_15225	CBBBBG_15970
+GCA_002294235	BJADOE_08755	BJADOE_16650	BJADOE_08750
+GCA_002298335	FBGDLH_01840	FBGDLH_10240	FBGDLH_01835
+GCA_002314145	FPMNGA_15000	FPMNGA_15610	FPMNGA_14995
+GCA_002331085	LLFHCL_11105	LLFHCL_11350	LLFHCL_11110
+GCA_002450785	OMAGGI_04500	OMAGGI_06765	OMAGGI_04495
+GCA_913047515	BHPPGE_01490	BHPPGE_01710	BHPPGE_01495
+GCA_913052225	ADAGHB_03165	ADAGHB_09785	ADAGHB_03160
+GCA_937895325	HDMDEP_02855	HDMDEP_02635	HDMDEP_02850
+GCA_937902495	IFEBNL_15515	IFEBNL_15270	IFEBNL_15510
+GCA_963998775	GCLBFK_15910	GCLBFK_15690	GCLBFK_15905
+GCA_964007845	PBCOKA_08510	PBCOKA_03960	PBCOKA_08515
+GCA_964012525	OEPAGM_02275	OEPAGM_02065	OEPAGM_02270
+GCF_002324005	LMEBDD_12250	LMEBDD_10430	LMEBDD_12245
+GCF_002433655	HDKPHC_07850	HDKPHC_00525	HDKPHC_07845
+GCF_026626885	FPEGHJ_04525	FPEGHJ_11870	FPEGHJ_04520
+GCF_034111725	LFFFGD_00170	LFFFGD_00055	LFFFGD_00165
+GCF_041222825	JMGMJO_16885	JMGMJO_16110	JMGMJO_16890
+GCF_913058015	POJHFL_11765	POJHFL_11625	POJHFL_11770
+HBD_gamma01	KACOLD_00150	KACOLD_15295	KACOLD_00145
+HBD_gamma04	PLPEHN_03115	PLPEHN_02870	PLPEHN_03110
+HBD_gamma6	AIINON_15265	AIINON_15485	AIINON_15270
+HBD_gamma08	HBLENI_17250	HBLENI_17460	HBLENI_17255
+HBD_gamma9	GAKKJI_14240	GAKKJI_16215	GAKKJI_14245
+HBD_gamma11	KNMLCN_08720	KNMLCN_11575	KNMLCN_08715
+EOF
+    faa_file="./$genome.faa"
+    if [[ -f "$faa_file" ]]; then
+        # Extract nifN
+        awk -v id="$nifN" '/^>/{p=($0~id)} p' "$faa_file" \
+            | sed "s/^>/>${genome}|${id} /" >> "$nifN_out"
+        # Extract nifB
+        awk -v id="$nifB" '/^>/{p=($0~id)} p' "$faa_file" \
+            | sed "s/^>/>${genome}|${id} /" >> "$nifB_out"
+        # Extract nifE
+        awk -v id="$nifE" '/^>/{p=($0~id)} p' "$faa_file" \
+            | sed "s/^>/>${genome}|${id} /" >> "$nifE_out"
+    else
+        echo "Warning: $faa_file not found"
+    fi
+done
+
+
+
+
+
+
+
+
+
+# then reducing to 60 characters per line 
+
+for f in *.faa; do fold -w 60 "$f" > "${f%.faa}2.faa"; done
+
+# remove everything after the first name 
+
+for f in *.faa; do
+  awk '
+    /^>/ { 
+      split($1, id, "|");   # split on | if present
+      print id[1];          # keep only the first part
+      next                  # skip rest of header line
+    }
+    /^[A-Z]/ { print }      # only print sequence lines
+  ' "$f" > "${f%.faa}_clean.faa"
+done
+
+
+# then we align using mafft and trim with trimAI 
+
+for f in nif*_sequences.faa; do mafft --globalpair --maxiterate 1000 "$f" > "${f%.faa}_global.aln"; done
+
+for aln in *_global.aln; do trimal -in "$aln" -automated1 -out "${aln%.aln}_trimmed.faa"; done
+
+# then we run IQ-TREE2 with model LG+G8 
+
+for aln in "${genes[@]}"; do
+  base=$(basename "$aln" .faa)
+  for model in "${models[@]}"; do
+    prefix="IQTREE2_trimmed/${base}_${model//+/}"
+    echo "Running $model on $base..."
+    iqtree2 \
+      -s "$aln" \
+      -m "$model" \
+      -bb 1000 \
+      -alrt 1000 \
+      -nt AUTO \
+      --prefix "$prefix"
+    echo "Finished $model for $base."
+  done
+done
+
+
+
 
