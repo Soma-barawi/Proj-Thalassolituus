@@ -40,6 +40,27 @@ def fetch_proteins(gene, org, min_len, max_len, retmax=20000, outdir="."):
 
     print(f"  Done: {out_file}")
 
+
+
+
+
+# TO SEE HOW MANY SEQS:
+grep ">" nifH_bacteria_refseq.faa | sed 's/.*\[\(.*\)\]/\1/' | sort -u | wc -l
+grep ">" nifH_archaea_refseq.faa | sed 's/.*\[\(.*\)\]/\1/' | sort -u | wc -l
+
+# TO COUNT THE LENGTHS:
+
+python - <<'EOF'
+from Bio import SeqIO
+import sys
+for f in ["nifH_all_refseq.faa","nifD_all_refseq.faa","nifK_all_refseq.faa"]:
+    lengths=[len(r.seq) for r in SeqIO.parse(f,"fasta")]
+    print(f"\n{f}: {len(lengths)} seqs | min={min(lengths)} | max={max(lengths)} | mean={sum(lengths)/len(lengths):.1f} | median={sorted(lengths)[len(lengths)//2]}")
+EOF
+
+
+
+
 if __name__ == "__main__":
     for gene, (min_len, max_len) in genes.items():
         for org in taxa:
