@@ -1,1 +1,22 @@
+# copy all ffn files from Bakta output into a separate directory 
+for d in */; do
+  cp $d/*.ffn ../all_ffn/
+done
 
+for d in */; do
+  cp $d/*.tsv ../all_tsv/
+done
+
+# from Bakta tsv files 
+# Use the locus tags in this TSV to extract the correct nif CDS from each Bakta .ffn
+
+mkdir -p ../nif_ffn
+
+for genome in ARC_Gamma03 GCA_002294235 GCA_002298335 GCA_002314145 GCA_002331085 GCA_002450785 GCA_913047515 GCA_913052225 GCA_937895325 GCA_937902495 GCA_963998775 GCA_964007845 GCA_964012525 GCF_002324005 GCF_002433655 GCF_026626885 GCF_034111725 GCF_041222825 GCF_913058015 HBD_gamma01 HBD_gamma04 HBD_gamma06 HBD_gamma08 HBD_gamma09 HBD_gamma11 New_ARC_Gamma03
+do
+  grep $genome nif_locus_tags.csv | cut -d',' -f3 > loci.txt
+  grep -A1 -f loci.txt ${genome}.ffn > ../nif_ffn/${genome}_nif.tmp
+  grep -v "^--$" ../nif_ffn/${genome}_nif.tmp > ../nif_ffn/${genome}_nif.ffn
+done
+
+rm loci.txt ../nif_ffn/*.tmp
