@@ -60,7 +60,7 @@ iqtree -s Thalassolituus-SCGs-trimmed.fa \
 echo -e "item_name\tdata_type\tdata_value" \
 > Thalassolituus-phylogenomic-layer-order.txt
 
-echo -e "SCGs_Bayesian_Tree\tnewick\t cat SCGs-Tree/Thalassolituus-SCGs-trimmed.fa.contree'" \
+echo -e "SCGs_Tree\tnewick\t cat SCGs-Tree/Thalassolituus-SCGs-trimmed.fa.contree'" \
 > Thalassolituus-phylogenomic-layer-order.txt
 
 anvi-import-misc-data -p Thalassolituus_Pan-PAN.db \
