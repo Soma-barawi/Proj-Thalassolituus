@@ -1,4 +1,4 @@
-
+# Using 25 putative diazotrophic Thalassolituus genomes  
 # Fix contig names with anvi-script-reformat-fasta
 # Create a contigs database for each genome using anvi-gen-contigs-database
 
@@ -34,7 +34,6 @@ anvi-pan-genome -g GENOMES.db \
                 --mcl-inflation 10 \
                 --use-ncbi-blast
 
-
 # To get SCGs from the pangenome 
 anvi-get-sequences-for-gene-clusters -p Thalassolituus_Pan-PAN.db \
                                      -g GENOMES.db \
@@ -52,7 +51,20 @@ trimal -in Thalassolituus-SCGs-aligned.fasta \
        -gt 0.50
 
 # Then build a tree 
+iqtree -s Thalassolituus-SCGs-trimmed.fa \
+       -nt 8 \
+       -m LG \
+       -bb 1000
 
+# Import into the database 
+echo -e "item_name\tdata_type\tdata_value" \
+> Thalassolituus-phylogenomic-layer-order.txt
+
+echo -e "SCGs_Bayesian_Tree\tnewick\t cat SCGs-Tree/Thalassolituus-SCGs-trimmed.fa.contree'" \
+> Thalassolituus-phylogenomic-layer-order.txt
+
+anvi-import-misc-data -p Thalassolituus_Pan-PAN.db \
+-t layer_orders Thalassolituus-phylogenomic-layer-order.txt
 
 # Display results in anvi’o interactive interface using the program anvi-display-pan
 anvi-display-pan -g GENOMES.db \
@@ -60,13 +72,3 @@ anvi-display-pan -g GENOMES.db \
 
 
 
-
-
-
-
-
-
-
-# Using 25 putative diazotrophic Thalassolituus genomes  
-# Already have genomes db at GENOMEs.db 
-# 
