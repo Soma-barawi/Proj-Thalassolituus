@@ -1,1 +1,72 @@
 
+# Fix contig names with anvi-script-reformat-fasta
+# Create a contigs database for each genome using anvi-gen-contigs-database
+
+for fasta in *.fna
+do
+    name=$(basename $fasta .fna)
+    anvi-gen-contigs-database -f $fasta --project-name $name -o ${name}.db -T 8 --force-overwrite
+done
+
+# Then start adding annotations to the contigs databases
+for db in *.db; do         
+    anvi-run-ncbi-cogs -c $db -T 8 --cog-data-dir /Users/somabarawi/miniconda3/envs/anvio-8/lib/python3.10/site-packages/anvio/data/misc/COG
+done
+
+# Adding all these the same way as above with a for loop 
+anvi-run-ncbi-cogs
+anvi-run-HMMs
+anvi-run-kegg-kofams
+anvi-run-pfams
+anvi-run-scg-taxonomy
+anvi-run-trna-taxonomy
+
+# Generate an anvi’o genomes-storage-db using the program anvi-gen-genomes-storage
+anvi-gen-genomes-storage -e external_genomes.txt -o GENOMES.db
+
+# Generate an anvi’o pan-db using the program anvi-pan-genome (which requires a genomes storage)
+
+anvi-pan-genome -g GENOMES.db \
+                --project-name "Thalassolituus_Pan" \
+                --output-dir Thalasso \
+                --num-threads 6 \
+                --minbit 0.5 \
+                --mcl-inflation 10 \
+                --use-ncbi-blast
+
+
+# To get SCGs from the pangenome 
+anvi-get-sequences-for-gene-clusters -p Thalassolituus_Pan-PAN.db \
+                                     -g GENOMES.db \
+                                     --min-num-genomes-gene-cluster-occurs 25 \
+                                     --max-num-genes-from-each-genome 1 \
+                                     --concatenate-gene-clusters \
+                                     --output-file Thalassolituus-SCGs.fa
+
+# Align with mafft default parameters, FFT-NS-2 (Fast but rough)
+mafft --reorder --auto input 
+
+# Trim with trimAL 
+trimal -in Thalassolituus-SCGs-aligned.fasta \
+       -out Thalassolituus-SCGs-trimmed.fa \
+       -gt 0.50
+
+# Then build a tree 
+
+
+# Display results in anvi’o interactive interface using the program anvi-display-pan
+anvi-display-pan -g GENOMES.db \
+                 -p Thalassolituus_Pan-PAN.db
+
+
+
+
+
+
+
+
+
+
+# Using 25 putative diazotrophic Thalassolituus genomes  
+# Already have genomes db at GENOMEs.db 
+# 
