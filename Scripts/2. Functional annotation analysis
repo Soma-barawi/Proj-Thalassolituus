@@ -1,3 +1,8 @@
+perl Diaiden.pl \
+-i /Users/somabarawi/Bioinformatics/diaiden/Diaiden/Thalassolituus_genomes \
+-p /Users/somabarawi/Bioinformatics/diaiden/Diaiden \
+-c 3 -b 3
+
 #BLASTp script on Narval
 
 #!/bin/bash
