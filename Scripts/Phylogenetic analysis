@@ -59,3 +59,44 @@ iqtree3 \
 -B 1000 --alrt 1000 \
 -T AUTO \
 --prefix nifHDKENB_concat_AA
+
+
+# For ZAMBI conference 
+models=(
+  "LG+G4"
+  "LG+R4"
+  "WAG+G4"
+  "WAG+R4"
+  "GTR20+G4"
+  "GTR20+R4"
+  "Q.pfam+G4"
+  "Q.pfam+R4"
+  "NQ.pfam+G4"
+  "NQ.pfam+R4"
+  "C20"
+  "LG4M"
+  "LG4X"
+)
+
+files=(
+  "nifH_aligned_with_outgroup_final.faa"
+  "nifD_aligned_with_outgroup_final.faa"
+  "nifK_aligned_with_outgroup_final.faa"
+  "nifHDK_concat_with_outgroup.faa"
+)
+
+for file in "${files[@]}"; do
+    gene=$(basename "$file" .faa)
+
+    for model in "${models[@]}"; do
+        model_name=$(echo "$model" | sed 's/+/_/g' | sed 's/\./_/g')
+
+        iqtree3 \
+            -s "$file" \
+            -m "$model" \
+            -bb 1000 \
+            -alrt 1000 \
+            -nt AUTO \
+            --prefix "${gene}_${model_name}"
+    done
+done
