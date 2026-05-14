@@ -3,26 +3,6 @@ perl Diaiden.pl \
 -p /Users/somabarawi/Bioinformatics/diaiden/Diaiden \
 -c 3 -b 3
 
-AMAS.py concat \
--i nifH_aligned_no_outgroup.faa \
-   nifD_aligned_no_outgroup.faa \
-   nifK_aligned_no_outgroup.faa \
-   nifE_aligned_no_outgroup.faa \
-   nifN_aligned_no_outgroup.faa \
-   nifB_aligned_no_outgroup.faa \
--f fasta \
--d aa \
--p nifHDKENB_partitions.txt \
--t nifHDKENB_concat.faa
-
-iqtree3 \
--s nifHDK_concat_with_outgroup.faa \
--p nifHDK_partitions_with_outgroup.txt \
--m MFP+MERGE \
--B 1000 --alrt 1000 \
--T AUTO \
---prefix nifHDK_concat_AA_with_outgroup
-
 #BLASTp script on Narval
 
 #!/bin/bash
