@@ -1,0 +1,26 @@
+
+# hmmsearch against proMGE database using their recombinase HMMs
+
+for f in Proteins/*.faa
+do
+    name=$(basename "$f" .faa)
+
+    hmmsearch --cpu 8 \
+        --domtblout hmmsearch_results/${name}.domtbl \
+        --tblout hmmsearch_results/${name}.tbl \
+        proMGE_all.hmm \
+        "$f" > hmmsearch_results/${name}.txt
+done
+
+
+# geNomad 
+
+for genome in diazotroph_genomes/*.fna; do
+    name=$(basename $genome .fna)
+    mkdir -p geNomad_output/$name
+    apptainer run --bind $(pwd):/app genomad.sif end-to-end \
+        /app/$genome \
+        /app/geNomad_output/$name \
+        /app/genomad_db \
+        --cleanup --splits 8
+done
