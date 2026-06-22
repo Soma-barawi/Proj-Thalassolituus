@@ -1,0 +1,14 @@
+
+# CD-HIT clustering of nifH sequences to identify identical nifH at 100% identity
+# for clade-level representative selection and downstream biogeographic analysis (Ocean Gene Atlas)
+
+#!/bin/bash
+#SBATCH --time=24:00:00
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=32G
+#SBATCH --account=rrg-rbeiko
+
+module load cd-hit/4.8.1
+fna="/home/somab/links/projects/rrg-rbeiko/somab/Proj-Thalassolituus/All_Thalassolituus_analysis/BLAST_analyses/cd-hit/nifH.fna"
+
+cd-hit-est -i "$fna" -o nifH_nr.fna -c 1.0 -n 10 -d 0 -T $SLURM_CPUS_PER_TASK
