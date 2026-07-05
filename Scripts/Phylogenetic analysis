@@ -102,6 +102,25 @@ for file in "${files[@]}"; do
 done
 
 
+# For AU test 
+
+cat species25.tre \
+    nifK_C20_no_outgroup.tre \
+    nifK_GTR20_G4_no_outgroup.tre \
+    nifK_GTR20_R4_no_outgroup.tre \
+    nifK_LG_G4_no_outgroup.tre \
+    nifK_LG_R4_no_outgroup.tre \
+    nifK_LG4M_no_outgroup.tre \
+    nifK_LG4X_no_outgroup.tre \
+    nifK_MF_LG_R2_no_outgroup.tre \
+    nifK_NQ_pfam_G4_no_outgroup.tre \
+    nifK_NQ_pfam_R4_no_outgroup.tre \
+    nifK_Q_pfam_G4_no_outgroup.tre \
+    nifK_Q_pfam_R4_no_outgroup.tre \
+    nifK_WAG_G4_no_outgroup.tre \
+    nifK_WAG_R4_no_outgroup.tre \
+    > nifK_trees_for_AU.treels
+
 # 2. List the TEST MODELS you want to use, one per AU run
 MODELS=(
   "C20"
