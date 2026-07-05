@@ -100,3 +100,36 @@ for file in "${files[@]}"; do
             --prefix "${gene}_${model_name}"
     done
 done
+
+
+# 2. List the TEST MODELS you want to use, one per AU run
+MODELS=(
+  "C20"
+  "GTR20+G4"
+  "GTR20+R4"
+  "LG+G4"
+  "LG+R4"
+  "LG4M"
+  "LG4X"
+  "LG+I+R2"
+  "NQ.pfam+G4"
+  "NQ.pfam+R4"
+  "Q.pfam+G4"
+  "Q.pfam+R4"
+  "WAG+G4"
+  "WAG+R4"
+)
+
+# 3. Loop over models and run AU tests one by one
+for MODEL in "${MODELS[@]}"; do
+  SAFE=${MODEL//+/}   # prefix without plus signs
+  echo "Running nifD AU under model: $MODEL"
+
+  iqtree -s nifD_aligned_with_outgroup_final.faa \
+         -m "$MODEL" \
+         -z nifD_trees_for_AU.treels \
+         -n 0 \
+         -zb 10000 \
+         -zw -au \
+         --prefix "nifD_AU_${SAFE}"
+done
