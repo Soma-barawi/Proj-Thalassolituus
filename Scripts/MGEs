@@ -33,3 +33,22 @@ for genome in Genomes/*.fna; do
     mefinder find \
         --contig "$genome" --threads 4 "MGE_output/${name}_mge"
 done
+
+
+# Updated HMMs with proMGE
+
+for aln in *.aln; do
+    base=$(basename "$aln" .aln)
+    hmmbuild "${base}.hmm" "$aln"
+done
+
+cat *.hmm > all_MGEs.hmm
+hmmpress all_MGEs.hmm
+
+for prot in *.faa; do
+    base=$(basename "$prot" .faa)
+    hmmsearch \
+      --cpu 4 -E 1e-5 --tblout "HMM_hits/${base}.tbl" all_MGEs.hmm \
+      "$prot" \
+      > /dev/null
+done
