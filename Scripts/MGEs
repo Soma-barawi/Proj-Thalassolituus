@@ -24,3 +24,12 @@ for genome in diazotroph_genomes/*.fna; do
         /app/genomad_db \
         --cleanup --splits 8
 done
+
+# MobileElementFinder 
+
+mkdir -p MGE_output
+for genome in Genomes/*.fna; do
+    name=$(basename "$genome" .fna)
+    mefinder find \
+        --contig "$genome" --threads 4 "MGE_output/${name}_mge"
+done
