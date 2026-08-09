@@ -1,5 +1,4 @@
-# the ARETE script for all Thalassolituus genomes 
-
+# Run ARETE on all Thalassolituus genomes 
 #!/usr/bin/bash
 
 export NXF_SINGULARITY_CACHEDIR=/home/somab/projects/rrg-rbeiko/somab/Projects/ARETE/work
