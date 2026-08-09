@@ -1,6 +1,7 @@
-
 # CD-HIT clustering of nifH sequences to identify identical nifH at 100% identity
 # for clade-level representative selection and downstream biogeographic analysis (Ocean Gene Atlas)
+
+# Run on Rorqual 
 
 #!/bin/bash
 #SBATCH --time=24:00:00
