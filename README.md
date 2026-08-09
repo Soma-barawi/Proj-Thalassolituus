@@ -1,4 +1,3 @@
-# Thalassolituus
-Evolution of nitrogen fixation pathway in Thalassolituus 
+# Evolution of nitrogen fixation in Thalassolituus
 
-Investigating the evolutionary history and ecological significance of nitrogen fixation in the marine bacterial genus Thalassolituus. Recent genomic analyses have revealed the presence of nitrogen fixation (nif) gene clusters in some Thalassolituus species, particularly Candidatus Thalassolituus haligoni. Our research will employ comparative genomics, phylogenetic analyses, and metagenomic approaches to elucidate the origin, distribution, and functional importance of nitrogen fixation capabilities within this genus. We will examine the nif clusters, assess gene loss, gene gain, and potential lateral gene transfer events. By integrating these approaches, we aim to understand the contribution of Thalassolituus to nitrogen fixation in marine ecosystems and its evolutionary adaptations to this process. 
+This repository contains scripts and supporting files for my research on the evolution of nitrogen fixation in the marine bacterial genus *Thalassolituus*. I analyzed 74 *Thalassolituus* genomes within a larger dataset of 421 Oceanospirillaceae genomes and used comparative genomics, phylogenetic analyses, gene neighborhood comparisons, codon usage analysis, and recombination detection to investigate how these genes evolved.
