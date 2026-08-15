@@ -1,3 +1,12 @@
-# Evolution of nitrogen fixation in Thalassolituus
+# Evolution of Nitrogen Fixation in *Thalassolituus*
 
-This repository contains scripts and supporting files for my research on the evolution of nitrogen fixation in the marine bacterial genus *Thalassolituus*. I analyzed 74 *Thalassolituus* genomes within a larger dataset of 421 Oceanospirillaceae genomes and used comparative genomics, phylogenetic analyses, gene neighborhood comparisons, codon usage analysis, and recombination detection to investigate how these genes evolved.
+This repository contains scripts and key data files used for my manuscript, currently titled "Lateral Gene Transfer Shapes the Distribution of Nitrogen Fixation Within a Cosmopolitan Clade of Marine *Thalassolituus*." I analyzed 74 *Thalassolituus* genomes selected from a larger dataset of 421 Oceanospirillaceae genomes to investigate how nitrogen fixation is distributed across the genus and how the pathway may have evolved.
+
+## Main analyses
+
+The scripts cover some of the main analyses used in the study, including:
+- Genome annotation and functional screening
+- Phylogenetic analyses and tree topology comparisons
+- Recombination and codon-usage analyses
+- Environmental distribution analysis
+- Figure generation
