@@ -1,8 +1,6 @@
-# Run ARETE on all Thalassolituus genomes 
+# Run the ARETE workflow on all Thalassolituus genomes 
+
 #!/usr/bin/bash
-
-export NXF_SINGULARITY_CACHEDIR=/home/somab/projects/rrg-rbeiko/somab/Projects/ARETE/work
-
 nextflow run Application-ARETE/ --input_sample_table '/home/somab/projects/rrg-rbeiko/somab/Projects/ARETE/samplesheet.csv' \
 	--db_cache '/home/somab/projects/rrg-rbeiko/somab/Projects/ARETE/Application-ARETE/dbcache' \
 	--bakta_db '/home/somab/projects/rrg-rbeiko/somab/Projects/ARETE/Application-ARETE/dbcache/baktadb/db-light/' \
@@ -15,3 +13,4 @@ nextflow run Application-ARETE/ --input_sample_table '/home/somab/projects/rrg-r
 	-entry annotation \
 	-profile 'singularity,narval' \
 	-resume
+
