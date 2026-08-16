@@ -11,5 +11,5 @@ AMAS.py concat -i nifH_aligned.faa nifD_aligned.faa nifK_aligned.faa nifE_aligne
 cd ..
 
 # Run IQ-TREE
-iqtree3 -s concatenated-alignments/nifHDK_concat.faa -p concatenated-alignments/nifHDK_partitions.txt -m MFP+MERGE -B 1000 --alrt 1000 -T AUTO --prefix nifHDK_concat_AA
-iqtree3 -s concatenated-alignments/nifHDKENB_concat.faa -p concatenated-alignments/nifHDKENB_partitions.txt -m MFP+MERGE -B 1000 --alrt 1000 -T AUTO --prefix nifHDKENB_concat_AA
+iqtree3 -s concatenated-alignments/nifHDK_concat.faa -p concatenated-alignments/nifHDK_partitions.txt -m MFP+MERGE -b 1000 --alrt 1000 -T AUTO --prefix nifHDK_concat_AA
+iqtree3 -s concatenated-alignments/nifHDKENB_concat.faa -p concatenated-alignments/nifHDKENB_partitions.txt -m MFP+MERGE -b 1000 --alrt 1000 -T AUTO --prefix nifHDKENB_concat_AA
