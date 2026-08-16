@@ -1,4 +1,3 @@
-#!/bin/bash
 # Screening the 25 putative diazotrophic genomes for mobile genetic elements
 
 mkdir -p hmmsearch_results geNomad_output MGE_output hmm_profiles HMM_hits
