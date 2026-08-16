@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Run locally
 # Diaiden uses Prodigal to predict proteins and DIAMOND to identify nitrogen-fixation genes
 # Screening the 74 Thalassolituus genomes for all 6 nif genes
