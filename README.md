@@ -8,4 +8,5 @@ The scripts cover some of the main analyses used in the study, including:
 - Genome annotation and functional screening
 - Phylogenetic analyses and tree topology comparisons
 - Codon-usage and environmental distribution analysis
+
 Additional supporting analyses and data files will be made available upon publication
