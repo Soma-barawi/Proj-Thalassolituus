@@ -7,6 +7,4 @@ This repository contains scripts and key data files used for my manuscript, curr
 The scripts cover some of the main analyses used in the study, including:
 - Genome annotation and functional screening
 - Phylogenetic analyses and tree topology comparisons
-- Recombination and codon-usage analyses
-- Environmental distribution analysis
-- Figure generation
+- Codon-usage and environmental distribution analysis
