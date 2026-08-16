@@ -1,74 +1,51 @@
-# Using 25 putative diazotrophic Thalassolituus genomes  
-# Fix contig names with anvi-script-reformat-fasta
-# Create a contigs database for each genome using anvi-gen-contigs-database
+#!/bin/bash
 
-for fasta in *.fna
-do
-    name=$(basename $fasta .fna)
-    anvi-gen-contigs-database -f $fasta --project-name $name -o ${name}.db -T 8 --force-overwrite
+# Only for exploratory purposes; building a pangenome and phylogenomic tree in Anvi'O using the 25 putative diazotrophic genomes 
+# Run locally in a conda environment
+
+mkdir -p genomes contigs-db Thalasso
+
+# Simplify the contig names so they work with anvi'o
+for fasta in raw-genomes/*.fna; do
+    name=$(basename "$fasta" .fna)
+    anvi-script-reformat-fasta "$fasta" -o "genomes/${name}.fna" --simplify-names
 done
 
-# Then start adding annotations to the contigs databases
-for db in *.db; do         
-    anvi-run-ncbi-cogs -c $db -T 8 --cog-data-dir /Users/somabarawi/miniconda3/envs/anvio-8/lib/python3.10/site-packages/anvio/data/misc/COG
+# Make an anvi'o contigs database for each genome
+for fasta in genomes/*.fna; do
+    name=$(basename "$fasta" .fna)
+    anvi-gen-contigs-database -f "$fasta" --project-name "$name" -o "contigs-db/${name}.db" -T 8 --force-overwrite
 done
 
-# Adding all these the same way as above with a for loop 
-anvi-run-ncbi-cogs
-anvi-run-HMMs
-anvi-run-kegg-kofams
-anvi-run-pfams
-anvi-run-scg-taxonomy
-anvi-run-trna-taxonomy
+# Add all the functional, taxonomic and tRNA annotations to each contigs database
+for db in contigs-db/*.db; do
+    anvi-run-ncbi-cogs -c "$db" -T 8
+    anvi-run-hmms -c "$db" -T 8
+    anvi-run-kegg-kofams -c "$db" -T 8
+    anvi-run-pfams -c "$db" -T 8
+    anvi-run-scg-taxonomy -c "$db" -T 8
+    anvi-run-trna-taxonomy -c "$db" -T 8
+done
 
-# Generate an anvi’o genomes-storage-db using the program anvi-gen-genomes-storage
+# external_genomes.txt contains the genome names and paths to their contigs databases
 anvi-gen-genomes-storage -e external_genomes.txt -o GENOMES.db
 
-# Generate an anvi’o pan-db using the program anvi-pan-genome (which requires a genomes storage)
+# Build the pangenome
+anvi-pan-genome -g GENOMES.db --project-name Thalassolituus_Pan --output-dir Thalasso --num-threads 8 --minbit 0.5 --mcl-inflation 10 --use-ncbi-blast
+pan_db="Thalasso/Thalassolituus_Pan-PAN.db"
 
-anvi-pan-genome -g GENOMES.db \
-                --project-name "Thalassolituus_Pan" \
-                --output-dir Thalasso \
-                --num-threads 6 \
-                --minbit 0.5 \
-                --mcl-inflation 10 \
-                --use-ncbi-blast
+# Extract and concatenate the single copy gene clusters found once in each of the 25 genomes, then align with MAFFT
+anvi-get-sequences-for-gene-clusters -p "$pan_db" -g GENOMES.db --min-num-genomes-gene-cluster-occurs 25 --max-num-genes-from-each-genome 1 --concatenate-gene-clusters --output-file Thalassolituus-SCGs.fa
 
-# To get SCGs from the pangenome 
-anvi-get-sequences-for-gene-clusters -p Thalassolituus_Pan-PAN.db \
-                                     -g GENOMES.db \
-                                     --min-num-genomes-gene-cluster-occurs 25 \
-                                     --max-num-genes-from-each-genome 1 \
-                                     --concatenate-gene-clusters \
-                                     --output-file Thalassolituus-SCGs.fa
+# Align, trim, build the tree 
+mafft --auto --reorder Thalassolituus-SCGs.fa > Thalassolituus-SCGs-aligned.fasta
+trimal -in Thalassolituus-SCGs-aligned.fasta -out Thalassolituus-SCGs-trimmed.fa -gt 0.50
+iqtree -s Thalassolituus-SCGs-trimmed.fa -nt 8 -m LG -bb 1000
 
-# Align with mafft default parameters, FFT-NS-2 (Fast but rough)
-mafft --reorder --auto input 
+# Make the layer-order file used to import the tree into the anvi'o pangenome
+echo -e "item_name\tdata_type\tdata_value" > Thalassolituus-phylogenomic-layer-order.txt
+echo -e "SCGs_Tree\tnewick\t$(cat Thalassolituus-SCGs-trimmed.fa.contree)" >> Thalassolituus-phylogenomic-layer-order.txt
 
-# Trim with trimAL 
-trimal -in Thalassolituus-SCGs-aligned.fasta \
-       -out Thalassolituus-SCGs-trimmed.fa \
-       -gt 0.50
-
-# Then build a tree 
-iqtree -s Thalassolituus-SCGs-trimmed.fa \
-       -nt 8 \
-       -m LG \
-       -bb 1000
-
-# Import into the database 
-echo -e "item_name\tdata_type\tdata_value" \
-> Thalassolituus-phylogenomic-layer-order.txt
-
-echo -e "SCGs_Tree\tnewick\t cat SCGs-Tree/Thalassolituus-SCGs-trimmed.fa.contree'" \
-> Thalassolituus-phylogenomic-layer-order.txt
-
-anvi-import-misc-data -p Thalassolituus_Pan-PAN.db \
--t layer_orders Thalassolituus-phylogenomic-layer-order.txt
-
-# Display results in anvi’o interactive interface using the program anvi-display-pan
-anvi-display-pan -g GENOMES.db \
-                 -p Thalassolituus_Pan-PAN.db
-
-
-
+# Import the phylogenomic tree and view in the interactive interface
+anvi-import-misc-data -p "$pan_db" -t layer_orders Thalassolituus-phylogenomic-layer-order.txt
+anvi-display-pan -g GENOMES.db -p "$pan_db"
