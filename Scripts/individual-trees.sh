@@ -24,6 +24,6 @@ for gene in nifH nifD nifK nifE nifN nifB; do
     mkdir -p "nif-trees/${gene}-AA-NT-trees/AA-tree"
     mkdir -p "nif-trees/${gene}-AA-NT-trees/NT-tree"
 
-    iqtree3 -s "nif-alignments/${gene}_aligned.faa" -m MFP -B 1000 --alrt 1000 -T 20 --prefix "nif-trees/${gene}-AA-NT-trees/AA-tree/${gene}"
-    iqtree3 -s "nif-alignments/${gene}_aligned.fna" -m MFP -B 1000 --alrt 1000 -T 20 --prefix "nif-trees/${gene}-AA-NT-trees/NT-tree/${gene}"
+    iqtree3 -s "nif-alignments/${gene}_aligned.faa" -m MFP -b 1000 --alrt 1000 -T 20 --prefix "nif-trees/${gene}-AA-NT-trees/AA-tree/${gene}"
+    iqtree3 -s "nif-alignments/${gene}_aligned.fna" -m MFP -b 1000 --alrt 1000 -T 20 --prefix "nif-trees/${gene}-AA-NT-trees/NT-tree/${gene}"
 done
