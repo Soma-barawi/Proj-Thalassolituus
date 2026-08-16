@@ -9,4 +9,4 @@ The scripts cover some of the main analyses used in the study, including:
 - Phylogenetic analyses and tree topology comparisons
 - Codon-usage and environmental distribution analysis
 
-## Additional supporting analyses and data files will be made available upon publication
+Additional supporting analyses and data files will be made available upon publication
