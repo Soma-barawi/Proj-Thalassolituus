@@ -3,7 +3,7 @@
 # Using the HADEG R script developed by Rojas-Vargas et al. (2023):
 # https://github.com/jarojasva/HADEG/tree/main/Scripts
 
-setwd("/Users/somabarawi/OneDrive - Dalhousie University/Bioinformatics/Chapter-1-Analyses/HDE-analysis/HADEG-results")
+setwd("/Users/somabarawi/Bioinformatics/Chapter-1-Analyses/HDE-analysis/HADEG-results")
 
 library(stringr)
 library(dplyr)
@@ -326,7 +326,7 @@ clean_genome <- function(x) {
   x
 }
 
-tree <- read.tree("/Users/somabarawi/Desktop/Trees/species.tree")
+tree <- read.tree("/Users/somabarawi/Bioinformatics/Chapter-1-Analyses/Trees/species.tree")
 tree$tip.label <- clean_genome(tree$tip.label)
 names(genome_labels) <- clean_genome(names(genome_labels))
 
