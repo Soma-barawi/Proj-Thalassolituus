@@ -10,7 +10,7 @@ library(sf)
 library(openxlsx)
 library(svglite)
 
-base_dir <- "/Users/somabarawi/OneDrive - Dalhousie University/Bioinformatics/Chapter-1-Analyses/TARA distribution map"
+base_dir <- "/Users/somabarawi/Bioinformatics/Chapter-1-Analyses/TARA distribution map"
 setwd(base_dir)
 
 clade_info <- tribble(
